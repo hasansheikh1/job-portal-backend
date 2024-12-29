@@ -84,6 +84,7 @@ const getUser = asyncHandler(async (req, res) => {
     }
     console.log(id)
 })
+
 const deleteUser = asyncHandler(async (req, res) => {
 
     const { id } = req.params;
@@ -161,9 +162,7 @@ const updateUser = asyncHandler(async (req, res) => {
     try {
         const updateUser = await User.findByIdAndUpdate(_id, {
             firstname: req.body.firstname,
-            lastname: req.body.lastname,
             email: req.body.email,
-            mobile: req.body.mobile,
 
         },
             { new: true }
