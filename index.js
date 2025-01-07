@@ -24,7 +24,7 @@ app.get('/', (req, res) => {
 })
 
 app.use("/api/user", authRouter)
-app.use("/api/job", authRouter)
+app.use("/api/job", jobRouter)
 
 app.use(notFound)
 app.use(errorHandler);
