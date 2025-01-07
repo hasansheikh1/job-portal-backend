@@ -47,7 +47,8 @@ const loginUserCtrl = asyncHandler(async (req, res) => {
             _id: findUser?._id,
             firstname: findUser?.firstname,
             email: findUser?.email,
-            token: generateToken(findUser?._id)
+            token: generateToken(findUser?._id),
+            role: findUser?.role
         })
     }
     else {

@@ -3,11 +3,10 @@ const bcrypt = require('bcrypt')
 const crypto = require("crypto");
 
 // Declare the Schema of the Mongo model
-var employerSchema = new mongoose.Schema({
+var jobSchema = new mongoose.Schema({
 
 
-
-    companyName: {
+    jobTitle: {
         type: String,
         required: true,
         index: true,
@@ -19,10 +18,17 @@ var employerSchema = new mongoose.Schema({
         unique: true,
     },
 
-    password: {
-        type: String,
-        required: true,
+    salary: {
+        type: Number,
+        // required: true,
     },
+    location: {
+        type: String,
+        required: true
+    },
+    jobDesc: {
+        type: String,
+    }
 
 
 },
@@ -34,4 +40,4 @@ var employerSchema = new mongoose.Schema({
 
 
 //Export the model
-module.exports = mongoose.model('Employer', employerSchema);
+module.exports = mongoose.model('Job', jobSchema);
