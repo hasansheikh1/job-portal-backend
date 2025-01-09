@@ -5,11 +5,12 @@ const asyncHandler = require('express-async-handler')
 
 const createJob = asyncHandler(async (req, res) => {
 
-    const { email } = req.body
+    const { email } = req?.body
 
     res.json({
         email: email
     })
+    
 
 
 })

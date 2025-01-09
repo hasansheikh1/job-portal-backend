@@ -5,6 +5,10 @@ const crypto = require("crypto");
 // Declare the Schema of the Mongo model
 var jobSchema = new mongoose.Schema({
 
+    eemployerId:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'User'
+    },
 
     jobTitle: {
         type: String,
@@ -12,12 +16,7 @@ var jobSchema = new mongoose.Schema({
         index: true,
     },
 
-    email: {
-        type: String,
-        required: true,
-        unique: true,
-    },
-
+  
     salary: {
         type: Number,
         // required: true,
@@ -28,7 +27,12 @@ var jobSchema = new mongoose.Schema({
     },
     jobDesc: {
         type: String,
+    },
+    status:{
+        type: String,
+        enum: ['user', 'admin', 'moderator']
     }
+
 
 
 },
