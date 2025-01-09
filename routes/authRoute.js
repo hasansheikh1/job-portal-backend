@@ -16,7 +16,7 @@ router.put('/password', authMiddleware, updatePassword)
 router.post('/forgot-password-token', forgotPasswordToken)
 router.put('/reset-password/:token', resetPassword)
 router.post('/login', loginUserCtrl);
-router.get('/all-users', getAllUsers);
+router.get('/all-users', isAdmin, getAllUsers);
 router.get('/refresh', handleRefreshToken);
 router.get('/logout', logout);
 router.get("/:id", authMiddleware, isAdmin, getUser);
