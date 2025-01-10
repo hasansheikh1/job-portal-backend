@@ -6,11 +6,13 @@ const crypto = require("crypto");
 var employerSchema = new mongoose.Schema({
 
 
-    userId:{
+    userId: {
 
-        type:mongoose.Schema.Types.ObjectId,
-        ref:'User'
-        },
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+
+    },
+
     companyName: {
         type: String,
         required: true,
@@ -20,20 +22,21 @@ var employerSchema = new mongoose.Schema({
     companyEmail: {
         type: String,
         // required: true,
-        unique: true,
+        // unique: true, just commented for development phase
+
     },
-    
+
     companyDesc: {
         type: String,
         // required: true,
         unique: true,
     },
-    
-isApproved:{
-    Boolean
 
-}
-    
+    isApproved: {
+        Boolean
+
+    }
+
 
 },
     {

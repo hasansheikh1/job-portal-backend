@@ -12,10 +12,9 @@ const createJob = asyncHandler(async (req, res) => {
     // }
     try {
         const { body } = req.body
-        console.log("req ", body)
+        // console.log("req ", body)
         const job = await Job.create({
-            ...req.body,
-            employerId: req?.user._id,
+            ...req.body
         })
 
         res.status(201).json({
@@ -25,7 +24,11 @@ const createJob = asyncHandler(async (req, res) => {
         })
     } catch (error) {
         console.log("Error creating job ", error)
+        res.status(500).json({
 
+            message: error,
+
+        })
     }
 
 

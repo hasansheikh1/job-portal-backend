@@ -25,14 +25,12 @@ const authMiddleware = asyncHandler(async (req, res, next) => {
     else {
         throw new Error("There is no token attached to header")
     }
-
-}
-)
+})
 
 const isAdmin = asyncHandler(async (req, res, next) => {
 
     // console.log("request user", req.user)
-    const { email } = req.user;
+    const { email } = req?.user;
     const adminUser = await User.findOne({ email });
     if (adminUser.role != 'admin') {
         throw new Error("You're not an admin")
