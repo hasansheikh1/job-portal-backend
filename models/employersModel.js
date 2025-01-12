@@ -9,14 +9,14 @@ var employerSchema = new mongoose.Schema({
     userId: {
 
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
-
+        ref: 'User',
+        required:true
     },
 
     companyName: {
         type: String,
         required: true,
-        index: true,
+        // index: true,
     },
 
     companyEmail: {
@@ -29,14 +29,10 @@ var employerSchema = new mongoose.Schema({
     companyDesc: {
         type: String,
         // required: true,
-        unique: true,
+        // unique: true,
     },
 
-    isApproved: {
-        Boolean
-
-    }
-
+   
 
 },
     {
