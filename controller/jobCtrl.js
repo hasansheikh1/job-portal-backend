@@ -86,6 +86,38 @@ const applyJob = asyncHandler(async(req,res)=>{
 
 })
 
+const getAllJobs = asyncHandler(async(req,res)=>{
+
+    // const jobs = await Job.find({}).sort({createdAt:-1})
+    // res.json(jobs)
+    // console.log("req.query",req?.query)
+    const limit= req?.query.limit || 10;
+    const cursor = req?.query.cursor;
+    let query = {};
+    if(cursor){
+     query = {_id:{$gt:cursor}};
+    }
+
+    try {
+       
+            const jobs = await Job.find(query).sort({createdAt:-1}).limit(parseInt(limit))
+            // createdAt:-1 indicates that the jobs will be sorted by latest one of descending order of date
+            res.status(200).json({
+                jobs,
+                cursor:jobs.length>0?jobs[jobs.length-1]?._id:null
+            })
+        
+        
+        
+    } catch (error) {
+        
+        console.log("Error fetching jobs",error)
+        res.status(500).json({message:"Internal server error"})
+
+    }
 
 
-module.exports = { createJob,applyJob };
+
+})
+
+module.exports = { createJob,applyJob,getAllJobs };
