@@ -38,7 +38,7 @@ var applicationSchema = new mongoose.Schema({
     }
 );
 
-applicationSchema.index({jobId:1,userId:1},{unique})
+applicationSchema.index({jobId:1,userId:1},{unique:true})
 
 
 //Export the model
