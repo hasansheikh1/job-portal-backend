@@ -4,16 +4,19 @@ const crypto = require("crypto");
 
 
 
+
 // Declare the Schema of the Mongo model
-var jobSchema = new mongoose.Schema({
+var applicationSchema = new mongoose.Schema({
 
     jobId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Job'
+        ref: 'Job',
+        required:true
     },
     userId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
+        ref: 'User',
+        required:true
     },
 
 
@@ -35,7 +38,8 @@ var jobSchema = new mongoose.Schema({
     }
 );
 
+applicationSchema.index({jobId:1,userId:1},{unique})
 
 
 //Export the model
-module.exports = mongoose.model('Job', jobSchema);
+module.exports = mongoose.model('Application', applicationSchema);

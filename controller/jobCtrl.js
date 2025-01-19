@@ -1,6 +1,6 @@
 const Job = require('../models/jobModel');
-const asyncHandler = require('express-async-handler')
-
+const asyncHandler = require('express-async-handler');
+const  Application = require('../models/applicationModel');
 
 
 const createJob = asyncHandler(async (req, res) => {
@@ -37,6 +37,28 @@ const createJob = asyncHandler(async (req, res) => {
 })
 
 
+const applyJob = asyncHandler(async(req,res)=>{
+
+    const {jobId}=req.body
+    const {_id}= req?.user
+
+    console.log("applying user",_id)
+
+    try {
+        
+        const user = Application.create
 
 
-module.exports = { createJob };
+
+
+    } 
+    catch (error) {
+        
+
+
+    }
+
+})
+
+
+module.exports = { createJob,applyJob };
