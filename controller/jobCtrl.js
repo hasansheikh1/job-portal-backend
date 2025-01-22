@@ -1,18 +1,29 @@
 const Job = require('../models/jobModel');
 const asyncHandler = require('express-async-handler');
 const Application = require('../models/applicationModel');
+const Employee = require('../models/employersModel');
 
 
 const createJob = asyncHandler(async (req, res) => {
 
-    if (req.user.role != 'employer') {
+    if (req?.user?.role != 'employer') {
         return res.status(403).json({ message: "Access denied. Only employers can create jobs." })
     }
+
     try {
         const { body } = req.body
-        // console.log("req ", body)
+        const userId = req?.user?._id;
+
+        const valid = await Employee.findOne({ userId })
+
+
+        if (!valid) {
+            return res.status(403).json({ message: "Your're Not an Employer. Signup as an employer to create job " })
+        }
+
         const job = await Job.create({
-            ...req.body
+            ...req.body,
+            employerId: valid._id
         })
 
         res.status(201).json({
@@ -118,14 +129,37 @@ const getAllJobs = asyncHandler(async (req, res) => {
 })
 
 
-const getEmpJobs = asyncHandler(async (req, res) => {
+const getEmpApprovedJobs = asyncHandler(async (req, res) => {
+
+
+    const { _id } = req.user;
+    const approve = req.query.approve || false;
+
+    let query = { employerId: _id };
+    if (approve) {
+        query.isApproved = true;
+    }
+
+    try {
+        const emp = await Employee.findOne({ userId: _id });
+
+        if (!emp) {
+            return res.status(403).json({ message: "You're not an employer" });
+        }
+
+        const jobs = await Job.find(query).sort({ createdAt: -1 });
+
+        res.status(200).json({
+            jobs
+        });
+    } catch (error) {
+        console.log("Error fetching jobs", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
 
 
 
 
 
-})
-
-
-
-module.exports = { createJob, applyJob, getAllJobs, getEmpJobs };
+module.exports = { createJob, applyJob, getAllJobs, getEmpApprovedJobs };

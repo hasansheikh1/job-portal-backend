@@ -1,6 +1,4 @@
 const mongoose = require('mongoose'); // Erase if already required
-const bcrypt = require('bcrypt')
-const crypto = require("crypto");
 
 // Declare the Schema of the Mongo model
 var jobSchema = new mongoose.Schema({
@@ -8,7 +6,7 @@ var jobSchema = new mongoose.Schema({
     employerId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Employer',
-        // required: true
+        required: true
     },
 
     jobTitle: {
@@ -39,10 +37,15 @@ var jobSchema = new mongoose.Schema({
         enum: ['open', 'closed']
     },
     isApproved: {
-        type:Boolean,
-        default:false
+        type: Boolean,
+        default: false
 
+    },
+    isApplied: {
+        type: Boolean,
+        default: false
     }
+
 
 
 
