@@ -1,15 +1,13 @@
 const Job = require('../models/jobModel');
 const asyncHandler = require('express-async-handler');
-const  Application = require('../models/applicationModel');
+const Application = require('../models/applicationModel');
 
 
 const createJob = asyncHandler(async (req, res) => {
 
-
-
-    // if(req.user.role!='employer'){
-    //     return res.status(403).json({message:"Access denied. Only employers can create jobs."})
-    // }
+    if (req.user.role != 'employer') {
+        return res.status(403).json({ message: "Access denied. Only employers can create jobs." })
+    }
     try {
         const { body } = req.body
         // console.log("req ", body)
@@ -18,10 +16,9 @@ const createJob = asyncHandler(async (req, res) => {
         })
 
         res.status(201).json({
-
             message: "Job created successfully",
-
         })
+
     } catch (error) {
         console.log("Error creating job ", error)
         res.status(500).json({
@@ -37,18 +34,18 @@ const createJob = asyncHandler(async (req, res) => {
 })
 
 
-const applyJob = asyncHandler(async(req,res)=>{
+const applyJob = asyncHandler(async (req, res) => {
 
-    const {jobId}=req.body
-    const {_id}= req?.user
+    const { jobId } = req.body
+    const { _id } = req?.user
 
-        if(!jobId){
-        return res.status(400).json({message:"Unprocessable Content"})
-        }
-    console.log("applying user",_id)
+    if (!jobId) {
+        return res.status(400).json({ message: "Unprocessable Content" })
+    }
+    console.log("applying user", _id)
 
     try {
-        
+
 
         const existingApplication = await Application.findOne({ jobId, userId: _id });
         if (existingApplication) {
@@ -62,16 +59,16 @@ const applyJob = asyncHandler(async(req,res)=>{
         const application = await Application.create({
 
             jobId,
-            userId:_id
+            userId: _id
         })
 
         res.status(201).json({
-            message:"Apllication Submitted Successfully",
+            message: "Apllication Submitted Successfully",
             application
         })
 
 
-    } 
+    }
     catch (error) {
         if (error.code === 11000) {
             // Handle duplicate application error
@@ -79,40 +76,40 @@ const applyJob = asyncHandler(async(req,res)=>{
                 message: 'You have already applied for this job.',
             });
         }
-        console.log("Application Error",error)
+        console.log("Application Error", error)
 
-        res.status(500).json({message:"Internal server error"})
+        res.status(500).json({ message: "Internal server error" })
     }
 
 })
 
-const getAllJobs = asyncHandler(async(req,res)=>{
+const getAllJobs = asyncHandler(async (req, res) => {
 
     // const jobs = await Job.find({}).sort({createdAt:-1})
     // res.json(jobs)
     // console.log("req.query",req?.query)
-    const limit= req?.query.limit || 10;
+    const limit = req?.query.limit || 10;
     const cursor = req?.query.cursor;
     let query = {};
-    if(cursor){
-     query = {_id:{$gt:cursor}};
+    if (cursor) {
+        query = { _id: { $gt: cursor } };
     }
 
     try {
-       
-            const jobs = await Job.find(query).sort({createdAt:-1}).limit(parseInt(limit))
-            // createdAt:-1 indicates that the jobs will be sorted by latest one of descending order of date
-            res.status(200).json({
-                jobs,
-                cursor:jobs.length>0?jobs[jobs.length-1]?._id:null
-            })
-        
-        
-        
+
+        const jobs = await Job.find(query).sort({ createdAt: -1 }).limit(parseInt(limit))
+        // createdAt:-1 indicates that the jobs will be sorted by latest one of descending order of date
+        res.status(200).json({
+            jobs,
+            cursor: jobs.length > 0 ? jobs[jobs.length - 1]?._id : null
+        })
+
+
+
     } catch (error) {
-        
-        console.log("Error fetching jobs",error)
-        res.status(500).json({message:"Internal server error"})
+
+        console.log("Error fetching jobs", error)
+        res.status(500).json({ message: "Internal server error" })
 
     }
 
@@ -120,4 +117,15 @@ const getAllJobs = asyncHandler(async(req,res)=>{
 
 })
 
-module.exports = { createJob,applyJob,getAllJobs };
+
+const getEmpJobs = asyncHandler(async (req, res) => {
+
+
+
+
+
+})
+
+
+
+module.exports = { createJob, applyJob, getAllJobs, getEmpJobs };
