@@ -162,5 +162,4 @@ const getEmpApprovedJobs = asyncHandler(async (req, res) => {
 
 
 
-
 module.exports = { createJob, applyJob, getAllJobs, getEmpApprovedJobs };
