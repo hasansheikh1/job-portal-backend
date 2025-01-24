@@ -133,12 +133,10 @@ const getEmpApprovedJobs = asyncHandler(async (req, res) => {
 
 
     const { _id } = req.user;
-    const approve = req.query.approve || false;
+    const approve = req.query.isApproved || false;
 
-    let query = { employerId: _id };
-    if (approve) {
-        query.isApproved = true;
-    }
+    let query = {};
+
 
     try {
         const emp = await Employee.findOne({ userId: _id });
@@ -146,7 +144,10 @@ const getEmpApprovedJobs = asyncHandler(async (req, res) => {
         if (!emp) {
             return res.status(403).json({ message: "You're not an employer" });
         }
-
+        query = { employerId: emp._id };
+        if (approve) {
+            query.isApproved = true;
+        }
         const jobs = await Job.find(query).sort({ createdAt: -1 });
 
         res.status(200).json({
