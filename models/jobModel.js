@@ -34,19 +34,15 @@ var jobSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['open', 'closed']
+        enum: ['open', 'closed'],
+        default: 'open'
     },
     isApproved: {
         type: Boolean,
         default: false
 
     },
-    isApplied: {
-        type: Boolean,
-        default: false
-    }
-
-
+   
 
 
 

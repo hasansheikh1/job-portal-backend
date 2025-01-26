@@ -6,6 +6,7 @@ const PORT = process.env.PORT || 4000;
 const authRouter = require("./routes/authRoute");
 const jobRouter = require("./routes/jobRoute");
 const empRouter = require("./routes/employerRoute");
+const applicationRouter = require("./routes/applicationRoute");
 
 const bodyParser = require('body-parser');
 const { notFound, errorHandler } = require('./middlewares/errorHandler');
@@ -27,6 +28,7 @@ app.get('/', (req, res) => {
 app.use("/api/user", authRouter)
 app.use("/api/job", jobRouter)
 app.use("/api/employer", empRouter)
+app.use("/api/application", applicationRouter)
 
 app.use(notFound)
 app.use(errorHandler);
