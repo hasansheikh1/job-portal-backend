@@ -2,6 +2,8 @@ const Job = require('../models/jobModel');
 const asyncHandler = require('express-async-handler');
 const Application = require('../models/applicationModel');
 const Employee = require('../models/employersModel');
+const cloudinary = require('../config/cloudinary');
+const { parseResume } = require('../config/affinda');
 
 
 const createJob = asyncHandler(async (req, res) => {
@@ -46,18 +48,16 @@ const createJob = asyncHandler(async (req, res) => {
 
 
 const applyJob = asyncHandler(async (req, res) => {
-
     const { jobId } = req.body
     const { _id } = req?.user
 
     if (!jobId) {
         return res.status(400).json({ message: "Unprocessable Content" })
     }
-    console.log("applying user", _id)
-
+    if (!req.file) {
+        return res.status(400).json({ message: "Resume (PDF) is required" })
+    }
     try {
-
-
         const existingApplication = await Application.findOne({ jobId, userId: _id });
         if (existingApplication) {
             return res.status(200).json({
@@ -65,34 +65,38 @@ const applyJob = asyncHandler(async (req, res) => {
                 applied: true
             });
         }
-
-
+        // Upload resume to Cloudinary
+        const uploadResult = await new Promise((resolve, reject) => {
+            const stream = cloudinary.uploader.upload_stream(
+                { resource_type: 'raw', folder: 'resumes' },
+                (error, result) => {
+                    if (error) reject(error);
+                    else resolve(result);
+                }
+            );
+            stream.end(req.file.buffer);
+        });
+        // Parse resume with Affinda
+        const parsedResume = await parseResume(req.file.buffer);
+        // Create application with resumeUrl and parsedResume
         const application = await Application.create({
-
             jobId,
-            userId: _id
-        })
-
+            userId: _id,
+            resumeUrl: uploadResult.secure_url,
+            parsedResume
+        });
         res.status(201).json({
-            message: "Apllication Submitted Successfully",
+            message: "Application Submitted Successfully",
             application
-        })
-
-
-    }
-    catch (error) {
+        });
+    } catch (error) {
         if (error.code === 11000) {
-            // Handle duplicate application error
-            return res.status(400).json({
-                message: 'You have already applied for this job.',
-            });
+            return res.status(400).json({ message: 'You have already applied for this job.' });
         }
         console.log("Application Error", error)
-
         res.status(500).json({ message: "Internal server error" })
     }
-
-})
+});
 
 const getAllJobs = asyncHandler(async (req, res) => {
 

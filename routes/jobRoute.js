@@ -1,4 +1,5 @@
 const express = require('express');
+const upload = require('../middlewares/upload');
 
 const { authMiddleware, isAdmin } = require("../middlewares/authMiddleware");
 const { reset } = require('nodemon');
@@ -7,7 +8,7 @@ const router = express.Router();
 
 
 router.post('/create', authMiddleware, createJob);
-router.post('/apply', authMiddleware, applyJob);
+router.post('/apply', authMiddleware, upload.single('resume'), applyJob);
 router.get('/getAllJobs', getAllJobs);
 router.get('/getEmpJobs', authMiddleware, getEmpApprovedJobs);
 

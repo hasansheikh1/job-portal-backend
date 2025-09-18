@@ -6,6 +6,8 @@ const { generateRefreshToken } = require("../config/refreshToken");
 const jwt = require("jsonwebtoken");
 // const sendEmail = require("./emailCtrl");
 const crypto = require("crypto");
+const Job = require('../models/jobModel');
+const Application = require('../models/applicationModel');
 
 const createUser = asyncHandler(async (req, res) => {
 
@@ -285,9 +287,25 @@ const resetPassword = asyncHandler(async (req, res) => {
     res.json(user)
 })
 
-
-
-
+const recommendJobs = asyncHandler(async (req, res) => {
+    const { _id } = req.user;
+    // Find the latest application with parsed resume
+    const latestApp = await Application.findOne({ userId: _id, parsedResume: { $exists: true } }).sort({ createdAt: -1 });
+    if (!latestApp || !latestApp.parsedResume) {
+        return res.status(404).json({ message: 'No parsed resume found. Please apply to a job with a resume first.' });
+    }
+    const userSkills = (latestApp.parsedResume.data?.skills || []).map(s => s.name.toLowerCase());
+    if (!userSkills.length) {
+        return res.status(404).json({ message: 'No skills found in parsed resume.' });
+    }
+    // Find jobs where at least one required skill matches user skills
+    const jobs = await Job.find();
+    const recommended = jobs.filter(job => {
+        if (!job.skills || !Array.isArray(job.skills)) return false;
+        return job.skills.some(skill => userSkills.includes(skill.toLowerCase()));
+    });
+    res.json({ recommended });
+});
 
 module.exports = {
     createUser,
@@ -303,4 +321,5 @@ module.exports = {
     updatePassword,
     forgotPasswordToken,
     resetPassword,
+    recommendJobs,
 };

@@ -5,7 +5,7 @@ const { createUser, loginUserCtrl,
     unBlockUser, blockUser,
     handleRefreshToken, logout,
     updatePassword, forgotPasswordToken,
-    resetPassword } = require('../controller/userCtrl');
+    resetPassword, recommendJobs } = require('../controller/userCtrl');
 const { authMiddleware, isAdmin } = require("../middlewares/authMiddleware");
 const { reset } = require('nodemon');
 const router = express.Router();
@@ -24,6 +24,7 @@ router.delete('/:id', deleteUser);
 router.put('/edituser', authMiddleware, updateUser);
 router.put('/block-user/:id', authMiddleware, isAdmin, blockUser);
 router.put('/unblock-user/:id', authMiddleware, isAdmin, unBlockUser);
+router.get('/recommend-jobs', authMiddleware, recommendJobs);
 
 
 

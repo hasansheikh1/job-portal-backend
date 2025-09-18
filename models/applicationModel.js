@@ -30,6 +30,12 @@ var applicationSchema = new mongoose.Schema({
         type: Date,
         default: Date.now, // Automatically set the date when the application is created
     },
+    resumeUrl: {
+        type: String,
+    },
+    parsedResume: {
+        type: Object,
+    },
 
 
 },
