@@ -152,6 +152,7 @@ const getEmpApprovedJobs = asyncHandler(async (req, res) => {
         if (approve) {
             query.isApproved = true;
         }
+        
         const jobs = await Job.find(query).sort({ createdAt: -1 });
 
         res.status(200).json({
@@ -163,7 +164,45 @@ const getEmpApprovedJobs = asyncHandler(async (req, res) => {
     }
 });
 
+const getJobApplicants = asyncHandler(async (req, res) => {
+
+    const {jobId} = req.params;
+    const {_id} = req.user;
+if(!jobId){
+    return res.status(400).json({message:"Job ID is required"})
+}
+if(!_id){
+    return res.status(400).json({message:"User ID is required"})
+}
+
+try{
+const applicants = await Application.find({jobId}).populate("userId","firstname email");
+
+    res.status(200).json({
+        message:"Job applicants fetched successfully",
+        jobId,
+        totalApplicants:applicants.length,
+        applicants:applicants.map(app=>({
+            applicationId:app._id,
+            firstname:app.userId.firstname,
+            email:app.userId.email,
+            status:app.status,
+            appliedAt:app.appliedAt,
+            resumeUrl:app.resumeUrl,
+            
+        })),
+       
+    });
+
+}
+catch(error){
+    console.log("Error fetching job applicants", error);
+    res.status(500).json({ message: "Internal server error" });
+}
+    
+})
 
 
 
-module.exports = { createJob, applyJob, getAllJobs, getEmpApprovedJobs };
+
+module.exports = { createJob, applyJob, getAllJobs, getEmpApprovedJobs,getJobApplicants };
