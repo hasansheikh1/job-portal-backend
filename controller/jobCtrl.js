@@ -196,9 +196,37 @@ const getEmpApprovedJobs = asyncHandler(async (req, res) => {
         if (approve) {
             query.isApproved = true;
         }
-        
-        const jobs = await Job.find(query).sort({ createdAt: -1 });
 
+        const pipeline = [
+            {$match :query},
+            {
+                $lookup:{
+                    from:"applications",
+                    let:{jobId:"$_id"},
+                    pipeline:[{$match:{$expr:{$eq:["$jobId","$$jobId"]}}},
+                    {$count:"count"}
+                ],
+                as :"applicationsCount"
+                }   
+            },
+
+                {
+                    $addFields:{
+                        applicantsCount:{$ifNull:[{$arrayElemAt:["$applicationsCount.count",0]},0]}
+                    }
+                },
+                {
+                    $project:{applicationsCount:0}
+                },
+                
+                    { $sort:{createdAt:-1}}
+                
+
+            ];
+
+
+        //const jobs = await Job.find(query).sort({ createdAt: -1 });
+            const jobs = await Job.aggregate(pipeline).exec();
         res.status(200).json({
             jobs
         });

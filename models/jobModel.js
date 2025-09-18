@@ -37,6 +37,11 @@ var jobSchema = new mongoose.Schema({
         enum: ['open', 'closed'],
         default: 'open'
     },
+    jobType: {
+        type: String,
+        enum: ['full-time', 'part-time', 'contract'],
+        default: 'full-time'
+    },
     isApproved: {
         type: Boolean,
         default: false
