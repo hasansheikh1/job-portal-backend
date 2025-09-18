@@ -41,10 +41,54 @@ const createJob = asyncHandler(async (req, res) => {
         })
     }
 
-
-
-
 })
+
+
+const updateJob = asyncHandler(async (req, res) => {
+    const { jobId } = req.params;
+    const { _id } = req.user;
+    
+    if(!jobId){
+        return res.status(400).json({message:"Job ID is required"})
+    }
+    if(!_id){
+        return res.status(400).json({message:"User ID is required"})
+    }
+    try{
+        const job = await Job.findByIdAndUpdate(jobId, req.body, {new:true});
+        res.status(200).json({
+            message:"Job updated successfully",
+            job
+        });
+    }
+    catch(error){
+        console.log("Error updating job", error);
+        res.status(500).json({message:"Internal server error"});
+    }
+})
+const deleteJob = asyncHandler(async (req, res) => {
+    const { jobId } = req.params;
+    const { _id } = req.user;
+    
+    if(!jobId){
+        return res.status(400).json({message:"Job ID is required"})
+    }
+    if(!_id){
+        return res.status(400).json({message:"User ID is required"})
+    }
+    try{
+        const job = await Job.findByIdAndDelete(jobId);
+        res.status(200).json({
+            message:"Job deleted successfully",
+            job
+        });
+    }
+    catch(error){
+        console.log("Error deleting job", error);
+        res.status(500).json({message:"Internal server error"});
+    }
+})
+
 
 
 const applyJob = asyncHandler(async (req, res) => {
@@ -205,4 +249,4 @@ catch(error){
 
 
 
-module.exports = { createJob, applyJob, getAllJobs, getEmpApprovedJobs,getJobApplicants };
+module.exports = { createJob, applyJob, getAllJobs, getEmpApprovedJobs,getJobApplicants,updateJob,deleteJob };
